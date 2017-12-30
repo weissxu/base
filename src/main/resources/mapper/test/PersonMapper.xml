@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="base.mapper.test.PersonMapper">
+	<resultMap id="BaseResultMap" type="base.entity.test.PersonEntity">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="birthday" property="birthday" jdbcType="VARCHAR" />
+		<result column="gender" property="gender" javaType="Integer" />
+		<result column="phone" property="phone" jdbcType="VARCHAR" />
+		<result column="address" property="address" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List_withoutid">
+		name, birthday, gender, phone,address
+	</sql>
+	<sql id="Base_Column_List">
+		id,
+		<include refid="Base_Column_List_withoutid" />
+	</sql>
+
+	<select id="findById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM person
+		WHERE id = #{id}
+	</select>
+
+	<insert id="insert" parameterType="base.entity.test.PersonEntity">
+		INSERT INTO
+		person
+		(
+		<include refid="Base_Column_List_withoutid" />
+		)
+		VALUES
+		(#{name}, #{birthday}, #{gender}, #{phone}, #{address})
+	</insert>
+
+	<update id="update" parameterType="base.entity.test.PersonEntity">
+		UPDATE
+		person
+		<trim prefix="set" suffixOverrides=",">
+			<if test="name != null">name = #{name},</if>
+			<if test="birthday != null">birthday = #{birthday},</if>
+			<if test="address != null">address = #{address},</if>
+			<if test="phone != null">phone = #{phone},</if>
+		</trim>
+		WHERE
+		id = #{id}
+	</update>
+
+	<delete id="delete" parameterType="java.lang.Long">
+		DELETE FROM
+		person
+		WHERE
+		id =#{id}
+	</delete>
+</mapper>
